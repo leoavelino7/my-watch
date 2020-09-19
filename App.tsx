@@ -65,6 +65,8 @@ const App = () => {
       return item;
     });
 
+    console.log(newItems);
+
     setItems(newItems);
   }
 

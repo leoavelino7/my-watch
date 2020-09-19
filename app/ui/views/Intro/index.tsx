@@ -53,10 +53,6 @@ const Intro: React.FC<IProps> = ({onOpen}) => {
   const top = new Animated.Value(0);
   const timeTop = new Animated.Value(0);
 
-  // function getAnimatedValue(state: any) {
-  //   return state.translateAnim._value;
-  // }
-
   function open() {
     top.setValue(0);
 

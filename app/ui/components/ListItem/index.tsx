@@ -18,18 +18,19 @@ const ListItem: React.FC<IProps> = ({item, onRemove}) => {
   const opacity = new Animated.Value(1);
 
   function remove() {
-    Animated.timing(left, {
-      toValue: 300,
-      duration: 1000,
-      easing: Easing.back(1),
-      useNativeDriver: false,
-    }).start();
-
-    Animated.timing(opacity, {
-      toValue: 0,
-      duration: 1200,
-      useNativeDriver: false,
-    }).start(() => onRemove(item));
+    Animated.parallel([
+      Animated.timing(left, {
+        toValue: 300,
+        duration: 1000,
+        easing: Easing.back(1),
+        useNativeDriver: false,
+      }),
+      Animated.timing(opacity, {
+        toValue: 0,
+        duration: 1200,
+        useNativeDriver: false,
+      }),
+    ]).start(() => onRemove(item));
   }
 
   return (

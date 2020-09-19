@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import Dialog from 'react-native-dialog';
 
-// import {style} from './styles';
+import {style} from './styles';
 
 interface ISelectedHour {
   id: number;
@@ -38,7 +38,11 @@ const NewItemDialog: React.FC<IProps> = ({
   return (
     <Dialog.Container visible={isDialogOpen}>
       <Dialog.Title>{`Nova tarefa - ${selectedHour.title}`}</Dialog.Title>
-      <Dialog.Input value={text} onChangeText={(value) => setText(value)} />
+      <Dialog.Input
+        style={style.inputText}
+        value={text}
+        onChangeText={(value) => setText(value)}
+      />
       <Dialog.Button label="Cancelar" onPress={close} />
       <Dialog.Button label="Adicionar" onPress={addItem} />
     </Dialog.Container>

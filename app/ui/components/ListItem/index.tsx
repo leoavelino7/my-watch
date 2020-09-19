@@ -1,25 +1,45 @@
 import React from 'react';
-import {View, Text, TouchableHighlight} from 'react-native';
+import {Text, TouchableHighlight, Animated, Easing} from 'react-native';
 
 import {style} from './styles';
 
-interface IItem {
+export interface IItemListItem {
   timeId: number;
   title: string;
 }
 
 interface IProps {
-  item: IItem;
+  item: IItemListItem;
+  onRemove(item: IItemListItem): void;
 }
 
-const ListItem: React.FC<IProps> = ({item}) => {
+const ListItem: React.FC<IProps> = ({item, onRemove}) => {
+  const left = new Animated.Value(0);
+  const opacity = new Animated.Value(1);
+
+  function remove() {
+    Animated.timing(left, {
+      toValue: 300,
+      duration: 1000,
+      easing: Easing.back(1),
+      useNativeDriver: false,
+    }).start();
+
+    Animated.timing(opacity, {
+      toValue: 0,
+      duration: 1200,
+      useNativeDriver: false,
+    }).start(() => onRemove(item));
+  }
+
   return (
-    <View style={style.itemContainer}>
+    <Animated.View
+      style={[style.itemContainer, {left: left, opacity: opacity}]}>
       <Text style={style.itemTitle}>{item.title}</Text>
-      <TouchableHighlight>
+      <TouchableHighlight onPress={remove}>
         <Text style={style.removeButton}>X</Text>
       </TouchableHighlight>
-    </View>
+    </Animated.View>
   );
 };
 

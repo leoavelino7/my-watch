@@ -1,5 +1,10 @@
-import React, {useEffect, useState} from 'react';
-import {TouchableHighlight, Text, useWindowDimensions} from 'react-native';
+import React, {useEffect} from 'react';
+import {
+  TouchableHighlight,
+  Text,
+  useWindowDimensions,
+  Animated,
+} from 'react-native';
 
 import LinearGradient from 'react-native-linear-gradient';
 
@@ -9,62 +14,81 @@ interface IProps {
   onOpen(): void;
 }
 
-function timeStyle(value: number) {
+function timeStyle(value: Animated.Value) {
   return {
-    top: `${value * 4}%`,
+    top: value.interpolate({
+      inputRange: [0, 1],
+      outputRange: ['0%', '40%'],
+    }),
   };
 }
 
-function containerStyle(value: number) {
+function containerStyle(value: Animated.Value) {
   return {
-    transform: [{translateY: -45 * value}, {rotateX: `${8.9 * value}deg`}],
+    transform: [
+      {
+        translateY: value.interpolate({
+          inputRange: [0, 1],
+          outputRange: [0, -450],
+        }),
+      },
+      {
+        rotateX: value.interpolate({
+          inputRange: [0, 1],
+          outputRange: ['0deg', '89deg'],
+        }),
+      },
+    ],
   };
 }
+
+const AnimatedLinearGradient = Animated.createAnimatedComponent(LinearGradient);
+const AnimatedTouchableHighlight = Animated.createAnimatedComponent(
+  TouchableHighlight,
+);
 
 const Intro: React.FC<IProps> = ({onOpen}) => {
   const {height} = useWindowDimensions();
 
-  const [top, setTop] = useState(0);
-  const [timeTop, setTimeTop] = useState(0);
+  const top = new Animated.Value(0);
+  const timeTop = new Animated.Value(0);
 
-  function firstOpen() {
-    const newValue = top + 1;
-    setTop(newValue);
+  // function getAnimatedValue(state: any) {
+  //   return state.translateAnim._value;
+  // }
+
+  function open() {
+    top.setValue(0);
+
+    Animated.timing(top, {
+      toValue: 1,
+      duration: 1000,
+      useNativeDriver: true,
+    }).start(onOpen);
   }
 
   useEffect(() => {
     function timeStart() {
-      if (timeTop < 10) {
-        setTimeTop(timeTop + 1);
-      }
+      timeTop.setValue(0);
+      Animated.timing(timeTop, {
+        toValue: 1,
+        duration: 2000,
+        useNativeDriver: false,
+      }).start();
     }
-    setTimeout(timeStart, 200);
+    timeStart();
   }, [timeTop]);
 
-  useEffect(() => {
-    function open() {
-      if (top < 10) {
-        setTop(top + 1);
-      } else {
-        onOpen();
-      }
-    }
-
-    if (top > 0) {
-      setTimeout(open, 200);
-    }
-  }, [top, onOpen]);
-
   return (
-    <LinearGradient
+    <AnimatedLinearGradient
       colors={['#146fa0', '#71c5df']}
       style={[style.container, {height: height}, containerStyle(top)]}>
-      <TouchableHighlight
+      <AnimatedTouchableHighlight
         style={[style.timeContainer, timeStyle(timeTop)]}
-        onPress={firstOpen}>
+        onPress={open}>
         <Text style={style.time}>09:41</Text>
-      </TouchableHighlight>
-    </LinearGradient>
+      </AnimatedTouchableHighlight>
+    </AnimatedLinearGradient>
   );
 };
 

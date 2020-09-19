@@ -3,8 +3,14 @@ import {colors} from '../../styles/global';
 
 export const style = StyleSheet.create({
   container: {
-    ...StyleSheet.absoluteFillObject,
-    zIndex: 999999999999999,
+    flex: 1,
+    flexDirection: 'column',
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    width: '100%',
+    // ...StyleSheet.absoluteFillObject,
+    // zIndex: 999999999999999,
   },
   timeContainer: {
     paddingTop: 15,
